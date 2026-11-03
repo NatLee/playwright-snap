@@ -1,0 +1,58 @@
+name: Release
+
+# Publishes the package to PyPI when a GitHub Release is published, with PyPI
+# Trusted Publishing: PyPI trusts this workflow's GitHub identity, so no API token
+# is stored anywhere. It only works after this one-time setup on PyPI:
+#
+#   https://pypi.org/manage/account/publishing/ -> "Add a new pending publisher"
+#     PyPI project name: playwright-snap
+#     Owner: NatLee    Repository name: playwright-snap
+#     Workflow name: release.yml    Environment name: pypi
+#
+# Until then a release fails at the "Publish to PyPI" step and nothing is uploaded.
+# Then: bump __version__ in src/playwright_snap/__init__.py, merge, and publish a
+# release tagged v<version> (e.g. v0.1.0).
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - name: Build and check
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - name: The release tag matches the package version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          ls "dist/playwright_snap-${TAG#v}-py3-none-any.whl" || {
+            echo "Tag $TAG does not match the version of the package built in dist/:"; ls dist; exit 1; }
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/playwright-snap/
+    permissions:
+      id-token: write  # lets PyPI check this workflow's identity
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist/
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
