@@ -1,0 +1,76 @@
+<!doctype html>
+<!--
+  README demo image: frames the real snapshots in out/ made by take_demo_snapshots.py.
+  Render the light and dark versions (#dark picks the dark theme) with a Chromium-based browser:
+    msedge --headless=new --hide-scrollbars --force-device-scale-factor=2 --window-size=960,440
+           --default-background-color=00000000 --virtual-time-budget=5000
+           --screenshot=demo-dark.png "file:///…/demo.html#dark"
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>playwright-snap demo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=block" rel="stylesheet">
+<style>
+  :root { --bg: #f6f8fa; --line: #d1d9e0; --ink: #1f2328; --muted: #59636e; --chrome: #ffffff; --field: #f6f8fa;
+          --green: #1a7f37; --blue: #0969da; --red: #cf222e; --shadow: 0 1px 3px rgba(31,35,40,.08), 0 10px 28px rgba(31,35,40,.10); }
+  .dark { --bg: #151b23; --line: #3d444d; --ink: #f0f6fc; --muted: #9198a1; --chrome: #212830; --field: #151b23;
+          --green: #3fb950; --blue: #4493f8; --red: #f85149; --shadow: 0 1px 3px rgba(0,0,0,.5), 0 10px 28px rgba(0,0,0,.45); }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: transparent; }
+  body { width: 960px; height: 440px; font-family: Inter, "Segoe UI", sans-serif; color: var(--ink); }
+  .frame { height: 440px; border-radius: 22px; border: 1px solid var(--line); background: var(--bg);
+           padding: 28px 28px 0; display: flex; gap: 30px; align-items: flex-start; }
+  figure { margin: 0; }
+  .window { width: 480px; border-radius: 12px; overflow: hidden; border: 1px solid var(--line);
+            background: var(--chrome); box-shadow: var(--shadow); }
+  .bar { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 11px; border-bottom: 1px solid var(--line); }
+  .bar span { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .address { margin-left: 8px; flex: 1; height: 19px; border-radius: 6px; background: var(--field); border: 1px solid var(--line);
+             font-size: 10.5px; color: var(--muted); display: flex; align-items: center; padding: 0 9px; }
+  .window img { display: block; width: 100%; }
+  .phone { width: 150px; padding: 7px; border-radius: 26px; background: var(--chrome); border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .phone img { display: block; width: 100%; border-radius: 19px; }
+  .sheet { position: relative; width: 206px; }
+  .sheet img { display: block; width: 100%; border-radius: 4px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+  .badge { position: absolute; top: -9px; right: -9px; color: #fff; font: 700 11px/1 Inter, sans-serif;
+           letter-spacing: .06em; padding: 6px 8px; border-radius: 7px; }
+  .sheet .badge { background: var(--red); }
+  figcaption { margin-top: 16px; }
+  .fn { font: 500 12.5px "JetBrains Mono", Consolas, monospace; display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+  .fn i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex: none; }
+  .phone-fig .fn i { background: var(--blue); }
+  .pdf .fn i { background: var(--red); }
+  .what { margin-top: 6px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+</style>
+</head>
+<body>
+<script>if (location.hash === '#dark') document.documentElement.className = 'dark';</script>
+<div class="frame">
+  <figure>
+    <div class="window">
+      <div class="bar"><span></span><span></span><span></span><div class="address">harbor-lights.example/</div></div>
+      <img src="out/desktop.png" alt="">
+    </div>
+    <figcaption>
+      <div class="fn"><i></i>get_image_snapshot_by_url(url)</div>
+      <div class="what">PNG of the 1600 × 900 browser window</div>
+    </figcaption>
+  </figure>
+  <figure class="phone-fig">
+    <div class="phone"><img src="out/phone.png" alt=""></div>
+    <figcaption>
+      <div class="fn"><i></i>is_mobile=True</div>
+      <div class="what">PNG of a 390 × 844<br>phone at 2× pixels</div>
+    </figcaption>
+  </figure>
+  <figure class="pdf">
+    <div class="sheet"><img src="out/pdf-page.png" alt=""><span class="badge">PDF</span></div>
+    <figcaption>
+      <div class="fn"><i></i>get_pdf_snapshot_by_url(url)</div>
+      <div class="what">The whole page on one sheet</div>
+    </figcaption>
+  </figure>
+</div>
+</body>
+</html>
