@@ -6,8 +6,12 @@ import asyncio
 import base64
 import io
 import math
+import os
 import pathlib
+import shutil
 import socket
+import subprocess
+import sys
 import time
 
 import pytest
@@ -29,6 +33,8 @@ from playwright_snap import (
 pytestmark = pytest.mark.browser
 
 SMALL = SnapshotOptions(width=800, height=600)
+#: The time limit for one command run in a child process.
+COMMAND_TIME_LIMIT = 120
 
 
 def png_image(data: bytes) -> Image.Image:
@@ -54,6 +60,9 @@ def closed_port() -> int:
         probe.bind(("127.0.0.1", 0))
         return probe.getsockname()[1]
 
+
+def run_command(*args: str, env: dict[str, str] | None = None) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(list(args), capture_output=True, text=True, env=env, timeout=COMMAND_TIME_LIMIT)
 
 
 # --- PNG -------------------------------------------------------------------
@@ -236,3 +245,43 @@ def test_chromium_that_is_not_installed_gets_the_install_command(monkeypatch, tm
 
     assert "python -m playwright install chromium" in str(caught.value)
 
+
+# --- the command -----------------------------------------------------------
+
+
+def test_command_prints_the_pdf_as_base64_on_line_5(site):
+    result = run_command(sys.executable, "-m", "playwright_snap", "--url", f"{site}/tall?height=1500", "--type", "pdf")
+
+    assert result.returncode == 0, result.stderr
+    lines = result.stdout.splitlines()
+    assert lines[3] == "--------------- Base64 ------------------"
+    assert len(pdf_pages(base64.b64decode(lines[4]))) == 1
+
+
+def test_installed_command_prints_the_png(site):
+    command = shutil.which("playwright-snap")
+    assert command, "the playwright-snap command is not on PATH"
+
+    result = run_command(command, "--url", f"{site}/tall?height=100")
+
+    assert result.returncode == 0, result.stderr
+    assert png_image(base64.b64decode(result.stdout.splitlines()[4])).size == (1600, 900)
+
+
+def test_command_exits_with_1_when_the_page_does_not_load():
+    url = f"http://127.0.0.1:{closed_port()}/"
+
+    result = run_command(sys.executable, "-m", "playwright_snap", "--url", url)
+
+    assert result.returncode == 1
+    assert result.stderr.startswith(f"playwright-snap: error: Could not take a snapshot of {url}: ")
+    assert "ERR_CONNECTION_REFUSED" in result.stderr
+
+
+def test_command_exits_with_1_when_chromium_is_not_installed(tmp_path, site):
+    env = {**os.environ, "PLAYWRIGHT_BROWSERS_PATH": str(tmp_path)}
+
+    result = run_command(sys.executable, "-m", "playwright_snap", "--url", f"{site}/tall?height=100", env=env)
+
+    assert result.returncode == 1
+    assert "python -m playwright install chromium" in result.stderr

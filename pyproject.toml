@@ -37,6 +37,9 @@ classifiers = [
 # makes the web font for one of its test pages (tests/conftest.py).
 test = ["pytest", "pillow", "pypdf", "fonttools"]
 
+[project.scripts]
+playwright-snap = "playwright_snap.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/NatLee/playwright-snap"
 Source = "https://github.com/NatLee/playwright-snap"
