@@ -8,8 +8,8 @@ import sys
 
 import pytest
 
-import playwright_snap.cli as cli
-from playwright_snap import NavigationError
+import playsnap.cli as cli
+from playsnap import NavigationError
 
 
 def fake_snapshot(monkeypatch, type_, take):
@@ -107,7 +107,7 @@ def test_help_names_the_default_window_size():
 
 
 def test_python_dash_m_runs_the_command():
-    result = subprocess.run([sys.executable, "-m", "playwright_snap", "--help"], capture_output=True, text=True)
+    result = subprocess.run([sys.executable, "-m", "playsnap", "--help"], capture_output=True, text=True)
 
     assert result.returncode == 0
     assert result.stdout.startswith("usage: playwright-snap ")

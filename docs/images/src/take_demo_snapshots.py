@@ -19,7 +19,7 @@ import pathlib
 import subprocess
 import threading
 
-from playwright_snap import SnapshotOptions, get_image_snapshot_by_url, get_pdf_snapshot_by_url, snap_png
+from playsnap import SnapshotOptions, get_image_snapshot_by_url, get_pdf_snapshot_by_url, snap_png
 
 HERE = pathlib.Path(__file__).resolve().parent
 OUT = HERE / "out"

@@ -10,7 +10,7 @@ name: Release
 #     Workflow name: release.yml    Environment name: pypi
 #
 # Until then a release fails at the "Publish to PyPI" step and nothing is uploaded.
-# Then: bump __version__ in src/playwright_snap/__init__.py, merge, and publish a
+# Then: bump __version__ in src/playsnap/__init__.py, merge, and publish a
 # release tagged v<version> (e.g. v0.1.0).
 
 on:
@@ -33,6 +33,7 @@ jobs:
       - name: The release tag matches the package version
         env:
           TAG: ${{ github.event.release.tag_name }}
+        # The files are named after the PyPI name (playwright-snap), not the import name.
         run: |
           ls "dist/playwright_snap-${TAG#v}-py3-none-any.whl" || {
             echo "Tag $TAG does not match the version of the package built in dist/:"; ls dist; exit 1; }
