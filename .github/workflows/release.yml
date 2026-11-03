@@ -1,16 +1,11 @@
 name: Release
 
-# Publishes the package to PyPI when a GitHub Release is published, with PyPI
-# Trusted Publishing: PyPI trusts this workflow's GitHub identity, so no API token
-# is stored anywhere. It only works after this one-time setup on PyPI:
+# Publishes the package to PyPI when a GitHub Release is published, using the
+# repository secret PYPI_API_TOKEN (a PyPI API token; until the project exists on
+# PyPI it has to be scoped to the whole account, afterwards it can be narrowed to
+# playwright-snap).
 #
-#   https://pypi.org/manage/account/publishing/ -> "Add a new pending publisher"
-#     PyPI project name: playwright-snap
-#     Owner: NatLee    Repository name: playwright-snap
-#     Workflow name: release.yml    Environment name: pypi
-#
-# Until then a release fails at the "Publish to PyPI" step and nothing is uploaded.
-# Then: bump __version__ in src/playsnap/__init__.py, merge, and publish a
+# To release: bump __version__ in src/playsnap/__init__.py, merge, and publish a
 # release tagged v<version> (e.g. v0.1.0).
 
 on:
@@ -45,11 +40,6 @@ jobs:
   publish:
     needs: build
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/project/playwright-snap/
-    permissions:
-      id-token: write  # lets PyPI check this workflow's identity
     steps:
       - uses: actions/download-artifact@v8
         with:
@@ -57,3 +47,5 @@ jobs:
           path: dist/
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}

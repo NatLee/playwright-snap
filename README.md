@@ -242,8 +242,8 @@ The README images come from the HTML files in
 render it.
 
 Releases go to PyPI through [`.github/workflows/release.yml`](https://github.com/NatLee/playwright-snap/blob/main/.github/workflows/release.yml)
-when a GitHub Release is published. It uses PyPI Trusted Publishing, which needs a one-time setup on
-PyPI; the steps are at the top of that file.
+when a GitHub Release is published, using the repository secret `PYPI_API_TOKEN`; the steps are at the
+top of that file.
 
 ## License
 
