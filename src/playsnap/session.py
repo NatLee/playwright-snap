@@ -1,7 +1,7 @@
 """The browser session: start Chromium, take snapshots, close Chromium again.
 
 Everything that talks to Playwright lives here, and only uses its public async API.
-The functions in :mod:`playwright_snap.snapshot` and the command line tool are thin
+The functions in :mod:`playsnap.snapshot` and the command line tool are thin
 wrappers around :func:`take_snapshot`.
 """
 import asyncio

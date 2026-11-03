@@ -4,18 +4,30 @@ import importlib.resources
 import pathlib
 import re
 
-import playwright_snap
+import playwright
+
+import playsnap
 
 README = (pathlib.Path(__file__).resolve().parent.parent / "README.md").read_text(encoding="utf-8")
 
 
 def test_version_is_the_one_in_the_package_metadata():
-    assert playwright_snap.__version__ == importlib.metadata.version("playwright-snap")
+    assert playsnap.__version__ == importlib.metadata.version("playwright-snap")
 
 
 def test_type_information_is_shipped():
     # py.typed tells type checkers that the package has type hints (PEP 561).
-    assert importlib.resources.files("playwright_snap").joinpath("py.typed").is_file()
+    assert importlib.resources.files("playsnap").joinpath("py.typed").is_file()
+
+
+def test_the_package_is_not_where_playwright_keeps_its_own_code():
+    # Playwright takes every file whose path starts with its own package folder for
+    # its own code. Installed as site-packages/playwright_snap/, our functions matched
+    # (".../playwright" + "_snap/...") and their names showed up in Playwright's error
+    # messages. That is why the import name does not start with "playwright".
+    playwright_folder = str(pathlib.Path(playwright.__file__).resolve().parent)
+
+    assert not str(pathlib.Path(playsnap.__file__).resolve()).startswith(playwright_folder)
 
 
 def test_readme_images_and_links_work_on_pypi():

@@ -38,7 +38,7 @@ classifiers = [
 test = ["pytest", "pillow", "pypdf", "fonttools"]
 
 [project.scripts]
-playwright-snap = "playwright_snap.cli:main"
+playwright-snap = "playsnap.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/NatLee/playwright-snap"
@@ -46,10 +46,7 @@ Source = "https://github.com/NatLee/playwright-snap"
 Issues = "https://github.com/NatLee/playwright-snap/issues"
 
 [tool.setuptools.dynamic]
-version = { attr = "playwright_snap.__version__" }
-
-[tool.setuptools.package-data]
-playwright_snap = ["py.typed"]
+version = { attr = "playsnap.__version__" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

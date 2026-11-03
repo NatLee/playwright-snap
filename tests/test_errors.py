@@ -4,9 +4,9 @@ import asyncio
 import pytest
 from playwright.async_api import Error as PlaywrightError
 
-from playwright_snap import BrowserLaunchError, NavigationError, SnapSession, SnapshotError, SnapshotTimeoutError
-from playwright_snap.errors import INSTALL_HELP
-from playwright_snap.session import _failures_as
+from playsnap import BrowserLaunchError, NavigationError, SnapSession, SnapshotError, SnapshotTimeoutError
+from playsnap.errors import INSTALL_HELP
+from playsnap.session import _failures_as
 
 URL = "https://example.com"
 

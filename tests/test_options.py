@@ -5,8 +5,8 @@ import typing
 import pytest
 from playwright.async_api import Page
 
-from playwright_snap import SnapshotOptions
-from playwright_snap.options import WAIT_UNTIL_CHOICES
+from playsnap import SnapshotOptions
+from playsnap.options import WAIT_UNTIL_CHOICES
 
 NUMBERS = ["width", "height", "device_scale_factor", "navigation_timeout", "snapshot_timeout"]
 

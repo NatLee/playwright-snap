@@ -69,7 +69,7 @@ def get_image_snapshot_by_url(
 ) -> str | None:
     """Return a PNG of the page's first ``width`` x ``height`` pixels as base64 text.
 
-    On failure, log the reason (logger ``playwright_snap``) and return None.
+    On failure, log the reason (logger ``playsnap``) and return None.
     """
     png = _or_none(snap_png, url, SnapshotOptions(width=width, height=height, is_mobile=is_mobile))
     return None if png is None else base64.b64encode(png).decode("ascii")
@@ -84,7 +84,7 @@ def get_pdf_snapshot_by_url(
     """Return the whole page as a single-page PDF, base64-encoded bytes.
 
     ``width`` and ``height`` set the browser window the page is laid out in.
-    On failure, log the reason (logger ``playwright_snap``) and return None.
+    On failure, log the reason (logger ``playsnap``) and return None.
     """
     pdf = _or_none(snap_pdf, url, SnapshotOptions(width=width, height=height, is_mobile=is_mobile))
     return None if pdf is None else base64.b64encode(pdf)

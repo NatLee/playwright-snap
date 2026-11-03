@@ -65,4 +65,4 @@ jobs:
           python -m build
           python -m twine check --strict dist/*
       - name: The wheel ships the type information
-        run: unzip -l dist/*.whl | grep -q 'playwright_snap/py.typed'
+        run: unzip -l dist/*.whl | grep -q '/py.typed$'

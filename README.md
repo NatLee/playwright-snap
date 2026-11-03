@@ -40,13 +40,15 @@ Ubuntu (for example in a `python:3.12-slim` Docker image); it needs root:
 python -m playwright install --with-deps chromium
 ```
 
-playwright-snap works on Python 3.10–3.14, on Linux, macOS and Windows. The latest code is a
+The package is called playwright-snap on PyPI and is imported as `playsnap`: a name that starts with
+`playwright` would make Playwright mistake this package's code for its own. It works on Python
+3.10–3.14, on Linux, macOS and Windows. The latest code is a
 `pip install git+https://github.com/NatLee/playwright-snap` away.
 
 ## Quick start
 
 ```python
-from playwright_snap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
+from playsnap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
 
 png = get_image_snapshot_by_url("https://example.com")  # PNG as base64 str
 pdf = get_pdf_snapshot_by_url("https://example.com")    # PDF as base64 bytes
@@ -67,7 +69,7 @@ Here is what you get for the same page (real output, decoded):
 Rather have the file itself, other window sizes, and an exception when it fails?
 
 ```python
-from playwright_snap import SnapshotOptions, snap_pdf, snap_png
+from playsnap import SnapshotOptions, snap_pdf, snap_png
 
 phone = SnapshotOptions(width=390, height=844, is_mobile=True, device_scale_factor=2)
 
@@ -79,7 +81,7 @@ with open("example.pdf", "wb") as f:
 
 ## API
 
-Everything below is imported from `playwright_snap`.
+Everything below is imported from `playsnap`.
 
 ### Functions
 
@@ -95,7 +97,7 @@ on one sheet as long as the page (with the page's print styles, as when you prin
 
 - `url` needs its scheme: `https://example.com`, not `example.com`.
 - The first two are pyppeteer-snap's functions, kept exactly as they were. They log the reason for a
-  failure to the `playwright_snap` logger, which Python shows on stderr unless you set up logging.
+  failure to the `playsnap` logger, which Python shows on stderr unless you set up logging.
 - Each call starts its own Chromium and closes it again, also when something goes wrong.
 - They are synchronous and also work where an event loop is already running, such as a Jupyter
   notebook. In async code, use [`SnapSession`](#snapsession) instead.
@@ -124,7 +126,7 @@ one per page.
 
 ```python
 import asyncio
-from playwright_snap import SnapSession, SnapshotOptions
+from playsnap import SnapSession, SnapshotOptions
 
 async def main():
     async with SnapSession() as session:
@@ -172,7 +174,7 @@ so you can save the file from the shell:
 playwright-snap --url https://example.com --type pdf | sed -n 5p | base64 -d > example.pdf
 ```
 
-`python -m playwright_snap` does the same. The exit status is 0 when it worked, 1 when the snapshot
+`python -m playsnap` does the same. The exit status is 0 when it worked, 1 when the snapshot
 failed (the reason goes to stderr), and 2 when `--url` is missing or `--type` is not `img` or `pdf`.
 
 ## Coming from pyppeteer-snap
@@ -181,12 +183,12 @@ Install playwright-snap and Chromium as shown in [Installation](#installation), 
 
 ```diff
 -from pyppesnap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
-+from playwright_snap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
++from playsnap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
 ```
 
 The functions take the same arguments, use the same defaults (a 1600 × 900 window, 30 s to load, 120 s
 per snapshot) and return the same types: a PNG as base64 `str`, a PDF as base64 `bytes`, `None` when
-the snapshot failed. `from pyppesnap.snapshot import …` becomes `from playwright_snap.snapshot import …`.
+the snapshot failed. `from pyppesnap.snapshot import …` becomes `from playsnap.snapshot import …`.
 The command line tool keeps its options and its output; only its name changes from `pyppesnap` to
 `playwright-snap`.
 
@@ -194,8 +196,9 @@ What is different, and why:
 
 | pyppeteer-snap | playwright-snap | Why |
 |---|---|---|
+| `pip install PyppeSnap`, `import pyppesnap` | `pip install playwright-snap`, `import playsnap` | An import name that starts with `playwright` would make Playwright mistake this package's code for its own |
 | Downloads Chromium on the first snapshot | `python -m playwright install chromium`, once | No surprise 100–200 MB download in the middle of a request, and the browser matches your Playwright version |
-| Prints the reason for a failure to stdout | Logs it (logger `playwright_snap`, stderr by default) | It cannot end up in data you pipe somewhere, and you can silence or redirect it |
+| Prints the reason for a failure to stdout | Logs it (logger `playsnap`, stderr by default) | It cannot end up in data you pipe somewhere, and you can silence or redirect it |
 | Time limits are module constants (`pyppesnap.snapshot.NAVIGATION_TIMEOUT`) | Fields of `SnapshotOptions`, passed to `snap_png()` / `snap_pdf()` | No global state to patch; each call says what it wants |
 | Any error returns `None` | Invalid arguments (`width=0`) raise `ValueError` | A bug in the calling code should not look like a page that failed to load |
 | Python 3.7–3.14 | Python 3.10–3.14 | Playwright needs Python 3.10 or newer |

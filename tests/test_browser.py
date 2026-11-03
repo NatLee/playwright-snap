@@ -18,7 +18,7 @@ import pytest
 from PIL import Image
 from pypdf import PdfReader
 
-from playwright_snap import (
+from playsnap import (
     BrowserLaunchError,
     NavigationError,
     SnapSession,
@@ -157,8 +157,7 @@ def test_failed_snapshot_returns_none_and_logs_why(caplog):
     url = f"http://127.0.0.1:{closed_port()}/"
 
     assert get_image_snapshot_by_url(url) is None
-    assert f"Could not take a snapshot of {url}: " in caplog.text
-    assert "net::ERR_CONNECTION_REFUSED" in caplog.text
+    assert f"Could not take a snapshot of {url}: Page.goto: net::ERR_CONNECTION_REFUSED" in caplog.text
 
 
 def test_works_inside_a_running_event_loop(site):
@@ -189,6 +188,28 @@ def test_a_session_takes_several_snapshots_each_in_a_fresh_context(site):
 
 
 # --- failures --------------------------------------------------------------
+
+
+def test_errors_name_playwrights_call_not_ours():
+    # Playwright starts its messages with the call that failed. When the package was
+    # imported as playwright_snap, Playwright took our functions for its own and named
+    # them instead: "take_snapshot: net::ERR_..." or "SnapSession.png: net::ERR_...".
+    url = f"http://127.0.0.1:{closed_port()}/"
+
+    async def in_a_session():
+        async with SnapSession() as session:
+            await session.png(url, SMALL)
+
+    with pytest.raises(NavigationError) as one_shot:
+        snap_png(url, SMALL)
+    with pytest.raises(NavigationError) as session:
+        asyncio.run(in_a_session())
+
+    for caught in (one_shot, session):
+        assert caught.value.reason.startswith("Page.goto: net::ERR_CONNECTION_REFUSED"), caught.value.reason
+        # The full Playwright error, call log included, does not mention our code either.
+        assert "take_snapshot" not in str(caught.value.__cause__)
+        assert "SnapSession" not in str(caught.value.__cause__)
 
 
 def test_url_without_scheme_is_a_navigation_error_with_a_hint():
@@ -250,7 +271,7 @@ def test_chromium_that_is_not_installed_gets_the_install_command(monkeypatch, tm
 
 
 def test_command_prints_the_pdf_as_base64_on_line_5(site):
-    result = run_command(sys.executable, "-m", "playwright_snap", "--url", f"{site}/tall?height=1500", "--type", "pdf")
+    result = run_command(sys.executable, "-m", "playsnap", "--url", f"{site}/tall?height=1500", "--type", "pdf")
 
     assert result.returncode == 0, result.stderr
     lines = result.stdout.splitlines()
@@ -271,7 +292,7 @@ def test_installed_command_prints_the_png(site):
 def test_command_exits_with_1_when_the_page_does_not_load():
     url = f"http://127.0.0.1:{closed_port()}/"
 
-    result = run_command(sys.executable, "-m", "playwright_snap", "--url", url)
+    result = run_command(sys.executable, "-m", "playsnap", "--url", url)
 
     assert result.returncode == 1
     assert result.stderr.startswith(f"playwright-snap: error: Could not take a snapshot of {url}: ")
@@ -281,7 +302,7 @@ def test_command_exits_with_1_when_the_page_does_not_load():
 def test_command_exits_with_1_when_chromium_is_not_installed(tmp_path, site):
     env = {**os.environ, "PLAYWRIGHT_BROWSERS_PATH": str(tmp_path)}
 
-    result = run_command(sys.executable, "-m", "playwright_snap", "--url", f"{site}/tall?height=100", env=env)
+    result = run_command(sys.executable, "-m", "playsnap", "--url", f"{site}/tall?height=100", env=env)
 
     assert result.returncode == 1
     assert "python -m playwright install chromium" in result.stderr

@@ -4,14 +4,14 @@
     python -m playwright install chromium
     python main.py        # then open http://127.0.0.1:9898
 
-It is pyppeteer-snap's example with the import switched from pyppesnap to playwright_snap.
+It is pyppeteer-snap's example with the import switched from pyppesnap to playsnap.
 
 Do not put it on the internet as it is: it opens any URL a visitor types,
 including addresses inside your own network.
 """
 from flask import Flask, render_template, request
 
-from playwright_snap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
+from playsnap import get_image_snapshot_by_url, get_pdf_snapshot_by_url
 
 app = Flask(__name__)
 
