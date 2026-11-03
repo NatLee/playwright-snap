@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>playwright-snap example</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 960px; margin: 40px auto; padding: 0 16px; }
+      form { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+      input { flex: 1; min-width: 240px; padding: 8px; font-size: 16px; }
+      button { padding: 8px 14px; font-size: 16px; }
+      #status { color: #59636e; margin: 16px 0; }
+      #source img, #source object { width: 100%; border: 1px solid #d1d9e0; }
+      #source object { height: 80vh; }
+    </style>
+  </head>
+  <body>
+    <h1>playwright-snap example</h1>
+    <form>
+      <label for="web_address">Web address</label>
+      <input type="url" id="web_address" value="https://example.com" required />
+      <button id="run_image" type="button">Get image</button>
+      <button id="run_pdf" type="button">Get PDF</button>
+    </form>
+    <p id="status"></p>
+    <div id="source"></div>
+
+    <script>
+      // Ask the server for a snapshot; it answers with the base64 text.
+      async function snapshot(route) {
+        const form = new FormData();
+        form.append("web_address", document.getElementById("web_address").value);
+        document.getElementById("status").textContent = "Taking the snapshot…";
+        const response = await fetch(route, { method: "POST", body: form });
+        const text = await response.text();
+        document.getElementById("status").textContent = response.ok ? "" : text;
+        return response.ok ? text : null;
+      }
+
+      document.getElementById("run_image").addEventListener("click", async () => {
+        const data = await snapshot("/get_web_image");
+        if (data) {
+          const img = document.createElement("img");
+          img.src = "data:image/png;base64," + data;
+          document.getElementById("source").replaceChildren(img);
+        }
+      });
+
+      document.getElementById("run_pdf").addEventListener("click", async () => {
+        const data = await snapshot("/get_web_pdf");
+        if (data) {
+          const pdf = document.createElement("object");
+          pdf.type = "application/pdf";
+          pdf.data = "data:application/pdf;base64," + data;
+          document.getElementById("source").replaceChildren(pdf);
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,21 @@
+<!doctype html>
+<!--
+  Twenty lines that switch to a web font once the page has loaded, as when a page's
+  stylesheets pick their fonts late. The font (made by conftest.py) takes a second to
+  arrive and makes every line four times as high: 20 x 4 x 20 px = 1600 px in all.
+-->
+<html>
+<head>
+<style>
+  @font-face { font-family: "Tall"; src: url("/slow/tall-font.ttf"); font-display: block; }
+  body { margin: 0; font: 20px sans-serif; }
+  body.loaded { font-family: "Tall", sans-serif; }
+  p { margin: 0; }
+</style>
+<script>addEventListener("load", () => document.body.classList.add("loaded"));</script>
+</head>
+<body>
+  <p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p>
+  <p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p><p>x</p>
+</body>
+</html>

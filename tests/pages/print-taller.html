@@ -1,0 +1,13 @@
+<!doctype html>
+<!-- 500 px high on screen, 3000 px high when printed. -->
+<html>
+<head>
+<style>
+  body { margin: 0; }
+  .screen { height: 500px; background: #0a0; }
+  .print { display: none; height: 3000px; background: #00f; }
+  @media print { .screen { display: none; } .print { display: block; } }
+</style>
+</head>
+<body><div class="screen"></div><div class="print"></div></body>
+</html>

@@ -1,0 +1,100 @@
+<!doctype html>
+<!--
+  The made-up page the README demo snapshots (see take_demo_snapshots.py).
+  Responsive on purpose: the phone snapshot (is_mobile=True) gets the one-column layout.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harbor Lights Festival 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=block" rel="stylesheet">
+<style>
+  :root { --ink: #14213d; --muted: #5c677d; --line: #e3e7ef; --sea: #0b4f6c; --sun: #f4a259; --rose: #e05263; --mint: #2a9d8f; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Inter, "Segoe UI", sans-serif; color: var(--ink); background: #fbfaf7; }
+  nav { display: flex; align-items: center; gap: 28px; padding: 18px 6vw; background: #fff; border-bottom: 1px solid var(--line); }
+  nav b { font-size: 20px; letter-spacing: -0.02em; margin-right: auto; }
+  nav b span { color: var(--sun); }
+  nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  nav .ticket { color: #fff; background: var(--rose); padding: 9px 16px; border-radius: 999px; }
+  header { position: relative; overflow: hidden; padding: 72px 6vw 88px; color: #fff;
+           background: radial-gradient(900px 420px at 85% 10%, rgba(244,162,89,.55), transparent 60%),
+                       linear-gradient(160deg, #0b4f6c 0%, #14213d 70%); }
+  header .lights { position: absolute; inset: auto 0 0 0; height: 90px; opacity: .9;
+                   background-image: radial-gradient(circle, #ffd88a 0 4px, transparent 5px); background-size: 46px 30px; }
+  header p.kicker { margin: 0 0 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: #ffd88a; font-size: 14px; }
+  header h1 { margin: 0; font-size: clamp(40px, 6vw, 78px); line-height: 1.02; letter-spacing: -0.04em; max-width: 12ch; }
+  header p.lede { margin: 20px 0 0; max-width: 46ch; font-size: 19px; line-height: 1.5; color: #dfe7f2; }
+  header .facts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+  header .facts span { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25); padding: 8px 14px; border-radius: 10px; font-weight: 600; }
+  main { padding: 48px 6vw 64px; }
+  h2 { font-size: 30px; letter-spacing: -0.03em; margin: 0 0 20px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .card .time { font-weight: 700; color: var(--sea); }
+  .card h3 { margin: 8px 0 6px; font-size: 20px; letter-spacing: -0.02em; }
+  .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+  .tag { display: inline-block; margin-top: 14px; font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; color: #fff; }
+  .music { background: var(--rose); } .food { background: var(--sun); } .boats { background: var(--mint); }
+  section + section { margin-top: 48px; }
+  .map { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+  .map .sea { min-height: 240px; border-radius: 16px; border: 1px solid var(--line);
+              background: radial-gradient(circle at 30% 40%, #fff 0 9px, var(--rose) 10px 16px, transparent 17px),
+                          radial-gradient(circle at 68% 62%, #fff 0 9px, var(--mint) 10px 16px, transparent 17px),
+                          radial-gradient(circle at 52% 25%, #fff 0 9px, var(--sun) 10px 16px, transparent 17px),
+                          repeating-linear-gradient(170deg, #d8ecf3 0 18px, #cfe6ef 18px 36px); }
+  .map ul { margin: 0; padding: 0; list-style: none; }
+  .map li { padding: 14px 0; border-bottom: 1px solid var(--line); color: var(--muted); }
+  .map li b { display: block; color: var(--ink); }
+  footer { padding: 28px 6vw; color: var(--muted); border-top: 1px solid var(--line); background: #fff; }
+  @media (max-width: 700px) {
+    nav a:not(.ticket) { display: none; }
+    header { padding: 44px 22px 120px; }
+    header p.lede { font-size: 17px; }
+    main { padding: 32px 22px 48px; }
+    .grid, .map { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <nav>
+    <b>Harbor <span>Lights</span></b>
+    <a href="#">Program</a><a href="#">Map</a><a href="#">Getting there</a>
+    <a class="ticket" href="#">Free entry</a>
+  </nav>
+  <header>
+    <p class="kicker">14 – 16 August 2026 · Old Harbor</p>
+    <h1>Three nights of lanterns on the water</h1>
+    <p class="lede">Lantern boats, street food from twenty stalls and live music on the pier, from sunset until midnight.</p>
+    <div class="facts"><span>40 lantern boats</span><span>3 stages</span><span>Free entry</span></div>
+    <div class="lights"></div>
+  </header>
+  <main>
+    <section>
+      <h2>Friday program</h2>
+      <div class="grid">
+        <div class="card"><div class="time">18:30</div><h3>Lantern parade</h3><p>Forty boats leave the north quay and circle the harbor basin.</p><span class="tag boats">Boats</span></div>
+        <div class="card"><div class="time">19:00</div><h3>Night market opens</h3><p>Grilled squid, sweet potato balls and lemon tea along the pier.</p><span class="tag food">Food</span></div>
+        <div class="card"><div class="time">20:15</div><h3>Brass on the pier</h3><p>The Harbor Brass Band plays sea shanties under the crane.</p><span class="tag music">Music</span></div>
+        <div class="card"><div class="time">21:00</div><h3>Make your own lantern</h3><p>Paper, bamboo and a candle: build one and set it afloat.</p><span class="tag boats">Boats</span></div>
+        <div class="card"><div class="time">21:45</div><h3>Late-night noodles</h3><p>The fishermen's cooperative serves its famous fish-ball soup.</p><span class="tag food">Food</span></div>
+        <div class="card"><div class="time">22:30</div><h3>Quiet hour</h3><p>Music stops, lights dim, and the lanterns drift out to sea.</p><span class="tag music">Music</span></div>
+      </div>
+    </section>
+    <section>
+      <h2>Find your way</h2>
+      <div class="map">
+        <div class="sea"></div>
+        <ul>
+          <li><b>Main stage</b>Pier 2, next to the old crane</li>
+          <li><b>Night market</b>Along the east quay</li>
+          <li><b>Lantern workshop</b>Boat house, north quay</li>
+          <li><b>First aid</b>Harbor master's office</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer>Harbor Lights is a made-up festival for the playwright-snap README.</footer>
+</body>
+</html>

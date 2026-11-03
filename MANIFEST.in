@@ -1,0 +1,4 @@
+# setuptools puts tests/test_*.py into the sdist on its own; add the rest of the
+# test suite (conftest.py, the test pages) so the tests run from the sdist too.
+graft tests
+global-exclude __pycache__ *.py[cod]

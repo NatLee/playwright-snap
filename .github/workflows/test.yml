@@ -1,0 +1,68 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }}${{ matrix.oldest && ' / oldest Playwright' || '' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        include:
+          - { os: windows-latest, python: "3.14" }
+          - { os: macos-latest, python: "3.14" }
+          # The lowest Playwright that pyproject.toml allows, on the lowest Python.
+          - { os: ubuntu-latest, python: "3.10", oldest: true }
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install the package and the test tools
+        run: python -m pip install ".[test]"
+      - name: Install the oldest Playwright that pyproject.toml allows
+        if: matrix.oldest
+        run: |
+          lowest=$(sed -n 's/^dependencies = \["playwright>=\([0-9.]*\)"\]$/\1/p' pyproject.toml)
+          test -n "$lowest"
+          python -m pip install "playwright==$lowest"
+      - name: Install Chromium
+        # --with-deps also installs the system libraries Chromium needs; only Linux needs them.
+        run: python -m playwright install ${{ runner.os == 'Linux' && '--with-deps' || '' }} chromium
+      - name: Run the tests (unit tests and real snapshots of local pages)
+        run: python -m pytest -v
+
+  types:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - name: Check the type hints (shipped with py.typed)
+        run: |
+          python -m pip install . mypy
+          mypy src
+
+  package:
+    # Build the sdist and wheel like the release workflow does, and check what PyPI gets.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+      - name: Build and check
+        run: |
+          python -m pip install build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - name: The wheel ships the type information
+        run: unzip -l dist/*.whl | grep -q 'playwright_snap/py.typed'

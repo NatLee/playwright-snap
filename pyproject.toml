@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "playwright-snap"
+dynamic = ["version"]
+description = "Snapshots of web pages as base64 PNG or PDF, taken with Playwright's headless Chromium."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Nat Lee", email = "natlee.work@gmail.com" }]
+# Playwright itself needs Python 3.10 or newer since 1.61.
+requires-python = ">=3.10"
+# 1.49 is the oldest Playwright the "oldest Playwright" CI job tests. CI reads the
+# number from this line, so raising it here is all it takes.
+dependencies = ["playwright>=1.49"]
+keywords = ["playwright", "chromium", "headless", "snapshot", "screenshot", "pdf", "base64"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Browsers",
+    "Topic :: Multimedia :: Graphics :: Capture :: Screen Capture",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+# pillow and pypdf read the real PNGs and PDFs in tests/test_browser.py; fonttools
+# makes the web font for one of its test pages (tests/conftest.py).
+test = ["pytest", "pillow", "pypdf", "fonttools"]
+
+[project.scripts]
+playwright-snap = "playwright_snap.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/NatLee/playwright-snap"
+Source = "https://github.com/NatLee/playwright-snap"
+Issues = "https://github.com/NatLee/playwright-snap/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "playwright_snap.__version__" }
+
+[tool.setuptools.package-data]
+playwright_snap = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["browser: starts a real headless Chromium (needs `python -m playwright install chromium`)"]
+
+[tool.mypy]
+strict = true
